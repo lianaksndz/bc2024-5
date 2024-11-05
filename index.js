@@ -43,3 +43,22 @@ app.get(`/notes/:name`, async (req, res) => {
         res.status(500).send('Error reading the note');
     }
 });
+app.put('/notes/:name', async (req, res) => {
+    const noteName = req.params.name;
+    const notePath = path.join(cache, `${ noteName }.txt`);
+    const newNote = req.body.text;
+    try {
+        await fs.access(notePath);
+    }
+    catch (error) {
+        return res.status(404).send('Not Found');
+    }
+
+    try {
+        await fs.writeFile(notePath, newNote, 'utf8');
+        res.send('Нотатка була записана у файл');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Помилка під час запису нотатки');
+    }
+});
