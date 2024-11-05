@@ -103,3 +103,31 @@ catch (error) {
     res.status(500).send('Error reading notes');
 }
 })
+
+app.post('/write', upload.none(), async (req, res) => {
+    const noteName = req.body.note_name;
+    const noteText = req.body.note;
+    const notePath = path.join(cache, `${ noteName }.txt`);
+
+    try {
+        try {
+            await fs.access(notePath);
+            return res.status(400).send('Bad Request. Note already exists');
+        } catch {
+            await fs.writeFile(notePath, noteText, 'utf8');
+            return res.status(201).send('Created');
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send('Error creating note');
+    }
+});
+
+app.get('/UploadForm.html', (req, res) => {
+    try {
+        res.sendFile(path.join(__dirname, 'UploadForm.html'));
+    }
+    catch (err) {
+        console.log(error)
+    }
+});
