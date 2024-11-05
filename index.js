@@ -62,3 +62,22 @@ app.put('/notes/:name', async (req, res) => {
         res.status(500).send('Помилка під час запису нотатки');
     }
 });
+
+app.delete(`/notes/:name`, async (req, res) => {
+    const noteName = req.params.name;
+    const notePath = path.join(cache, `${ noteName }.txt`);
+    try {
+        await fs.access(notePath);
+    }
+    catch (error) {
+        return res.status(404).send('Not Found');
+    }
+
+    try {
+        fs.unlink(notePath)
+        return res.status(200).send('Видалено успішно');
+    }
+    catch (err) {
+        return res.status(500).send('Помилка під час видалення нотатки');
+    }
+})
