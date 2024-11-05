@@ -81,3 +81,25 @@ app.delete(`/notes/:name`, async (req, res) => {
         return res.status(500).send('Помилка під час видалення нотатки');
     }
 })
+
+app.get(`/notes`, async (req, res) =>{
+    try {
+    const files = await fs.readdir(cache);
+    const notes = [];
+
+    for (const file of files) {
+        if (path.extname(file) === '.txt') {
+            const noteName = path.basename(file, '.txt');
+            const notePath = path.join(cache, file);
+            const text = await fs.readFile(notePath, 'utf8');
+            notes.push({ name: noteName, text });
+        }
+    }
+
+    res.status(200).json(notes);
+}
+catch (error) {
+    console.error(error);
+    res.status(500).send('Error reading notes');
+}
+})
