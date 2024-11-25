@@ -1,13 +1,13 @@
 
     document.querySelector('form').addEventListener('submit', async function(e) {
-        e.preventDefault();
+    e.preventDefault();
     const formData = new FormData(this);
     const messageElement = document.getElementById('responseMessage');
 
     try {
         const response = await fetch('/write', {
         method: 'POST',
-    body: formData
+        body: formData
         });
 
     if (response.status === 201) {
